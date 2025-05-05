@@ -21,16 +21,15 @@ const emailWorker = new Worker('email-queue',async job => {
 
   if(!user?.email) throw new Error('User not authorized');
 
-  const receiver = {
-    from: user.email,
-    to: email.to,
-    subject: email.subject,
-    text: email.body,
-  };
 
   try {
-    const info = await transporter.sendMail(receiver);
-    console.log('Email sent', info.messageId);
+    const result = await transporter.sendMail({
+      to: email.to,
+      subject: email.subject,
+      html: email.body,
+    });
+    console.log(`Email is sended to ${email.to}`);
+    console.log(`Email sent: ${result.messageId}`);
     await prisma.email.update({
       where: {id: emailId},
       data: {

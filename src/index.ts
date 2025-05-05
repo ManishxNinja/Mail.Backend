@@ -52,22 +52,7 @@ app.post('/send', async(req: Request, res: Response) => {
 
   console.log("Adding Job to Redis Queue");
 
-  try {
-    const result = await transporter.sendMail({
-      to: email.to,
-      subject: email.subject,
-      html: email.body,
-    });
-    console.log(`Email is sended to ${email.to}`);
-    console.log(`Email sent: ${result.messageId}`);
-    
-  } catch(err) {
-    console.log("Unable to send the email",err);
-  }
-
-  
-
-  // await emailQueue.add('send-email', {emailId: email.id});
+  await emailQueue.add('send-email', {emailId: email.id});
 
   return res.status(200).json({ message: "Email scheduled", email });
 })
